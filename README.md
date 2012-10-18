@@ -13,7 +13,7 @@ HEROKU_POSTGRESQL_VIOLET on app keikoku
   [warning] Database exceeded its row limits. Access to be revoked in 7 days.
   More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
 
-HEROKU_POSTGRESQL_BLUE on app keikoku
+HEROKU_POSTGRESQL_BLUE on app myapp
   [info] Database reaching its row limits.
   More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
 $ heroku notifications
