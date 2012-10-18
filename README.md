@@ -2,6 +2,14 @@
 
 A keikoku consumer for the heroku CLI
 
+### Installation
+
+```
+heroku plugins:install git://github.com/hgmnz/heroku-notifications.git
+```
+
+### Usage
+
 ```
 $ heroku notifications
 === Notifications for harold@heroku.com (3)
@@ -19,3 +27,8 @@ HEROKU_POSTGRESQL_BLUE on app myapp
 $ heroku notifications
 harold@heroku.com has no notifications.
 ```
+
+## THIS IS BETA SOFTWARE
+
+Thanks for trying it out. If you find any issues or would like to provide
+feedback, please let us know at support@heroku.com
