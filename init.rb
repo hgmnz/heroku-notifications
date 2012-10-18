@@ -1,5 +1,7 @@
-$:.unshift File.join(File.dirname(__FILE__), 'vendor', 'keikokuc', 'lib')
-$:.unshift File.join(File.dirname(__FILE__), 'vendor', 'keikokuc')
-require './vendor/keikokuc/lib/keikokuc'
+require './vendor/keikokuc/lib/handles_timeout'
+require './vendor/keikokuc/lib/keikokuc/version'
+require './vendor/keikokuc/lib/keikokuc/client'
+require './vendor/keikokuc/lib/keikokuc/notification'
+require './vendor/keikokuc/lib/keikokuc/notification_list'
 require 'heroku/command/base'
 require 'heroku/command/notifications'
