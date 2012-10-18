@@ -1,5 +1,7 @@
 require 'keikokuc'
 require 'heroku/command/base'
+# require 'excon'
+require 'heroku/api'
 
 class Heroku::Command::Notifications < Heroku::Command::Base
 
@@ -13,7 +15,8 @@ class Heroku::Command::Notifications < Heroku::Command::Base
       else
         display_header("Notifications for #{current_user} (#{notification_list.size})", true)
         display(notification_list.map do |notification|
-          out = "#{notification.account_sequence}: #{notification.target_name}\n"
+          attachment, app = attachment_for(notification.target_name)
+          out = "#{attachment} on app #{app}\n"
           out += "  [#{notification.severity}] #{notification.message}\n"
           out += "  More info: #{notification.url}\n"
           out
@@ -33,5 +36,13 @@ private
       :user     => current_user,
       :password => Heroku::Auth.password
     )
+  end
+
+  def attachment_for(resource_name)
+    response = Heroku::Auth.api.request(:method => 'GET', :path => "/resources/#{resource_name}")
+    if response.status == 200
+      attachment = response.body['attachments'].first
+      [attachment["name"], attachment["app"]["name"]]
+    end
   end
 end

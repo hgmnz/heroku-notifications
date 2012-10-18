@@ -4,13 +4,17 @@ require "heroku/command/notifications"
 module Heroku::Command
   describe Notifications do
 
-    before(:each) do
+    before do
       stub_core
       api.post_app("name" => "myapp", "stack" => "cedar")
+      Excon.stub({:path => '/resources/flying-monkey-123'},
+                 { :status => 200,
+                   :body => { "billing_app" => { "name" => "app1" }, "attachments" => [{"name" => "HEROKU_POSTGRESQL_BLACK", "app" => { "name" => "app1" }}] }})
     end
 
-    after(:each) do
+    after do
       api.delete_app("myapp")
+      Excon.stubs.shift
     end
 
     it "shows an empty list when no notifications available" do
@@ -41,14 +45,10 @@ module Heroku::Command
       stderr, stdout = execute("notifications")
       stderr.should == ""
       stdout.should == (<<-END_STDOUT)
-=== Notifications for email@example.com (2)
-n30: flying-monkey-123
+=== Notifications for email@example.com (1)
+HEROKU_POSTGRESQL_BLACK on app app1
   [info] Database HEROKU_POSTGRESQL_BROWN is over row limits
   More info: https://devcenter.heroku.com/how-to-fix-problem
-
-n31: rising-cloud-42
-  [fatal] High OOM rates
-  More info: https://devcenter.heroku.com/oom
 END_STDOUT
     end
 
@@ -61,14 +61,6 @@ END_STDOUT
             :message          => 'Database HEROKU_POSTGRESQL_BROWN is over row limits',
             :url              => 'https://devcenter.heroku.com/how-to-fix-problem',
             :severity         => 'info'
-          },
-          {
-            :id               => 2,
-            :account_sequence => 'n31',
-            :target_name      => 'rising-cloud-42',
-            :message          => 'High OOM rates',
-            :url              => 'https://devcenter.heroku.com/oom',
-            :severity         => 'fatal'
           }
         ]
     end
