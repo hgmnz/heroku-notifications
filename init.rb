@@ -1,4 +1,4 @@
-$:.unshift File.expand_path(File.join('vendor', 'keikokuc', 'lib'), File.dirname(__FILE__))
+$:.unshift File.join(File.dirname(__FILE__), 'vendor', 'keikokuc', 'lib')
 puts $:
 require 'keikokuc'
 require 'heroku/command/base'
