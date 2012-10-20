@@ -5,7 +5,6 @@ A keikoku consumer for the heroku CLI
 ### Installation
 
 ```
-gem install keikokuc
 heroku plugins:install git://github.com/hgmnz/heroku-notifications.git
 ```
 
