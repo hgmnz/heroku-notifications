@@ -21,7 +21,7 @@ module Keikokuc
 
     it 'handles invalid notifications' do
       ShamRack.at('keikoku.herokuapp.com', 443) do |env|
-        [422, {}, StringIO.new(Yajl::Encoder.encode({ :errors => :srorre }))]
+        [422, {}, StringIO.new(OkJson.encode({ 'errors' => 'srorre' }))]
       end
 
       response, error = Client.new.post_notification({})

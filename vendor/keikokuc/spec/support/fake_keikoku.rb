@@ -33,24 +33,24 @@ class FakeKeikoku
         if publisher_by_api_key(request_api_key)
           notification = Notification.new({:id => next_id}.merge(request_body))
           @notifications << notification
-          [200, { }, [Yajl::Encoder.encode({:id => notification.id})]]
+          [200, { }, [Keikokuc::OkJson.encode({'id' => notification.id})]]
         else
           [401, { }, ["Not authorized"]]
         end
       elsif request_path == '/api/v1/notifications' && request_verb == 'GET'
         if current_user = authenticate_consumer
           notifications = notifications_for_user(current_user).map(&:to_hash)
-          [200, { }, [Yajl::Encoder.encode(notifications)]]
+          [200, { }, [Keikokuc::OkJson.encode(notifications)]]
         else
           [401, { }, ["Not authorized"]]
         end
       elsif request_path =~ %r{/api/v1/notifications/([^/]+)/read} && request_verb == 'POST'
         if current_user = authenticate_consumer
           notification = notifications_for_user(current_user).detect do |notification|
-            notification.to_hash[:id].to_s == $1.to_s
+            notification.to_hash['id'].to_s == $1.to_s
           end
           notification.mark_read_by!(current_user)
-          [200, {}, [Yajl::Encoder.encode({:read_by => current_user, :read_at => Time.now})]]
+          [200, {}, [Keikokuc::OkJson.encode({'read_by' => current_user, 'read_at' => Time.now.to_s})]]
         else
           [401, { }, ["Not authorized"]]
         end
@@ -82,7 +82,7 @@ private
   def request_body
     raw_body = rack_env["rack.input"].read
     rack_env["rack.input"].rewind
-    Yajl::Parser.parse(raw_body)
+    Keikokuc::OkJson.decode(raw_body)
   end
 
   def request_api_key
@@ -115,7 +115,7 @@ private
     end
 
     def to_hash
-      @opts
+      @opts.inject({}) { |result, (k, v)| result[k.to_s] = v; result }
     end
 
     def mark_read_by!(user)

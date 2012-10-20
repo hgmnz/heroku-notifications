@@ -1,5 +1,5 @@
 require 'rest-client'
-require 'yajl'
+require 'keikokuc/okjson'
 require 'timeout'
 
 # Internal: Handles HTTP requests/responses to the keikoku API
@@ -116,11 +116,11 @@ private
   end
 
   def encode_json(hash) # :nodoc:
-    Yajl::Encoder.encode(hash)
+    Keikokuc::OkJson.encode(stringify_hash_keys(hash))
   end
 
   def parse_json(data) # :nodoc:
-    symbolize_keys(Yajl::Parser.parse(data)) if data
+    symbolize_keys(Keikokuc::OkJson.decode(data)) if data
   end
 
   def symbolize_keys(object) # :nodoc:
@@ -135,6 +135,13 @@ private
   def symbolize_hash_keys(hash)
     hash.inject({}) do |result, (k, v)|
       result[k.to_sym] = v
+      result
+    end
+  end
+
+  def stringify_hash_keys(hash)
+    hash.inject({}) do |result, (k, v)|
+      result[k.to_s] = v
       result
     end
   end

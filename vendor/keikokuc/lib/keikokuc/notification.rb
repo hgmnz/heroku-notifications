@@ -50,7 +50,9 @@ class Keikokuc::Notification
   #
   # Returns a boolean set to true if publishing succeeded
   def publish
-    response, error = client.post_notification(to_hash)
+    hash = to_hash
+    hash.delete(:client)
+    response, error = client.post_notification(hash)
     if error.nil?
       self.remote_id = response[:id]
       self.errors = nil

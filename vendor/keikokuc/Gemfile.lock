@@ -3,7 +3,6 @@ PATH
   specs:
     keikokuc (0.6)
       rest-client
-      yajl-ruby
 
 GEM
   remote: https://rubygems.org/
@@ -23,7 +22,6 @@ GEM
     rspec-mocks (2.11.3)
     sham_rack (1.3.4)
       rack
-    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
