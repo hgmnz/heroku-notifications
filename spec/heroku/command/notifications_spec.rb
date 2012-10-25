@@ -27,7 +27,7 @@ module Heroku::Command
       end
       stderr, stdout = execute("notifications")
       stderr.should == ""
-      stdout.should == "email@example.com has no notifications.\n"
+      stdout.should == "No notifications.\n"
     end
 
     it "shows notifications if they exist and marks them as read" do

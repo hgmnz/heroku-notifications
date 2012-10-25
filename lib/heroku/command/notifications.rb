@@ -11,7 +11,7 @@ class Heroku::Command::Notifications < Heroku::Command::Base
   def index
     if notification_list.fetch
       if notification_list.empty?
-        display("#{current_user} has no notifications.")
+        display("No notifications.")
       else
         display(notification_list.map do |notification|
           attachment, app = attachment_for(notification.target_name)
