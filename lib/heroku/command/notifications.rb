@@ -13,12 +13,11 @@ class Heroku::Command::Notifications < Heroku::Command::Base
       if notification_list.empty?
         display("#{current_user} has no notifications.")
       else
-        display_header("Notifications for #{current_user} (#{notification_list.size})", true)
         display(notification_list.map do |notification|
           attachment, app = attachment_for(notification.target_name)
-          out = "#{attachment} on app #{app}\n"
-          out += "  [#{notification.severity}] #{notification.message}\n"
-          out += "  More info: #{notification.url}\n"
+          display_header("#{attachment} on app #{app}")
+          out = "[#{notification.severity}] #{notification.message}\n"
+          out += "More info: #{notification.url}\n"
           out
         end.join("\n"))
         notification_list.read_all

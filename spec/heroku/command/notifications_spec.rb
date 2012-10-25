@@ -45,10 +45,9 @@ module Heroku::Command
       stderr, stdout = execute("notifications")
       stderr.should == ""
       stdout.should == (<<-END_STDOUT)
-=== Notifications for email@example.com (1)
-HEROKU_POSTGRESQL_BLACK on app app1
-  [info] Database HEROKU_POSTGRESQL_BROWN is over row limits
-  More info: https://devcenter.heroku.com/how-to-fix-problem
+=== HEROKU_POSTGRESQL_BLACK on app app1
+[info] Database HEROKU_POSTGRESQL_BROWN is over row limits
+More info: https://devcenter.heroku.com/how-to-fix-problem
 END_STDOUT
     end
 
