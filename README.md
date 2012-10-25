@@ -12,20 +12,19 @@ heroku plugins:install git://github.com/hgmnz/heroku-notifications.git
 
 ```
 $ heroku notifications
-=== Notifications for harold@heroku.com (3)
-HEROKU_POSTGRESQL_BLACK on app hgmnz
-  [emergency] Database exceeded its row limits and access has been revoked.
-  More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
+=== HEROKU_POSTGRESQL_BLACK on app hgmnz
+[emergency] Database exceeded its row limits and access has been revoked.
+More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
 
-HEROKU_POSTGRESQL_VIOLET on app keikoku
-  [warning] Database exceeded its row limits. Access to be revoked in 7 days.
-  More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
+=== HEROKU_POSTGRESQL_VIOLET on app keikoku
+[warning] Database exceeded its row limits. Access to be revoked in 7 days.
+More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
 
-HEROKU_POSTGRESQL_BLUE on app myapp
-  [info] Database reaching its row limits.
-  More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
+=== HEROKU_POSTGRESQL_BLUE on app myapp
+[info] Database reaching its row limits.
+More info: https://devcenter.heroku.com/articles/heroku-postgres-starter-tier#limits
 $ heroku notifications
-harold@heroku.com has no notifications.
+No notifications.
 ```
 
 ## THIS IS BETA SOFTWARE
