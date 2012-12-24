@@ -1,6 +1,5 @@
 require 'keikokuc'
 require 'heroku/command/base'
-# require 'excon'
 require 'heroku/api'
 
 class Heroku::Command::Notifications < Heroku::Command::Base
