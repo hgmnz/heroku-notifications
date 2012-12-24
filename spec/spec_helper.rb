@@ -56,3 +56,5 @@ end
 RSpec.configure do |config|
   config.mock_with :rr
 end
+
+load File.join(File.dirname(__FILE__), "..", "init.rb")
