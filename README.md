@@ -11,6 +11,10 @@ heroku plugins:install git://github.com/hgmnz/heroku-notifications.git
 ### Usage
 
 ```
+$ heroku pg:info --app <yourapp>
+# snip
+
+Unread notifications available. Run `heroku notifications` to view them.
 $ heroku notifications
 === HEROKU_POSTGRESQL_BLACK on app hgmnz
 [emergency] Database exceeded its row limits and access has been revoked.
