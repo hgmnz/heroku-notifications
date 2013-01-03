@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    keikokuc (0.6)
+    keikokuc (0.7)
       rest-client
 
 GEM

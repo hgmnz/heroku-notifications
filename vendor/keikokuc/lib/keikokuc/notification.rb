@@ -17,8 +17,8 @@
 class Keikokuc::Notification
   attr_accessor :message, :url, :severity,
                 :target_name, :account_email,
-                :producer_api_key, :remote_id,
-                :errors, :read_at, :account_sequence
+                :producer_api_key, :producer_username,
+                :remote_id, :errors, :account_sequence
 
   # Public: Initialize a notification
   #
@@ -30,17 +30,17 @@ class Keikokuc::Notification
   #
   # All keys on the attr_accessor list will be set
   def initialize(opts = {})
-    @message          = opts[:message]
-    @url              = opts[:url]
-    @severity         = opts[:severity]
-    @target_name      = opts[:target_name]
-    @account_email    = opts[:account_email]
-    @producer_api_key = opts[:producer_api_key]
-    @remote_id        = opts[:remote_id]
-    @errors           = opts[:errors]
-    @read_at          = opts[:read_at]
-    @account_sequence = opts[:account_sequence]
-    @client           = opts[:client]
+    @message           = opts[:message]
+    @url               = opts[:url]
+    @severity          = opts[:severity]
+    @target_name       = opts[:target_name]
+    @account_email     = opts[:account_email]
+    @producer_api_key  = opts[:producer_api_key]
+    @producer_username = opts[:producer_username]
+    @remote_id         = opts[:remote_id]
+    @errors            = opts[:errors]
+    @account_sequence  = opts[:account_sequence]
+    @client            = opts[:client]
   end
 
   # Public: publishes this notification to keikoku
@@ -70,17 +70,7 @@ class Keikokuc::Notification
   # Returns a boolean set to true if marking as read succeeded
   def read
     response, error = client.read_notification(remote_id)
-    if error.nil?
-      self.read_at = response[:read_at]
-    end
     error.nil?
-  end
-
-  # Public: whether this notification is marked as read by this user
-  #
-  # Returns true if the user has marked this notification as read
-  def read?
-    !!@read_at
   end
 
   # Internal: coerces this notification to a hash
@@ -96,13 +86,15 @@ class Keikokuc::Notification
       :producer_api_key => @producer_api_key,
       :remote_id        => @remote_id,
       :errors           => @errors,
-      :read_at          => @read_at,
       :account_sequence => @account_sequence,
       :client           => @client
     }
   end
 
   def client # :nodoc:
-    @client ||= Keikokuc::Client.new(:producer_api_key => producer_api_key)
+    @client ||= Keikokuc::Client.new(
+      :producer_username => producer_username,
+      :api_key           => producer_api_key
+    )
   end
 end

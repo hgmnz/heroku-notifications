@@ -51,15 +51,12 @@ module Keikokuc
 
       fake_client.should_receive(:read_notification).
         with('1234').
-        and_return([{:read_at => Time.now}, nil])
+        and_return([{'status' => 'ok'}, nil])
 
       notification = Notification.new(:remote_id => '1234', :client => fake_client)
 
       result = notification.read
       expect(result).to be_true
-
-      expect(notification.read_at).to be_within(1).of(Time.now)
-      expect(notification).to be_read
     end
 
     it 'handles errors' do
@@ -73,28 +70,15 @@ module Keikokuc
 
       result = notification.read
       expect(result).to be_false
-
-      expect(notification.read_at).to be_nil
-      expect(notification).not_to be_read
-    end
-  end
-
-  describe Notification, '#read?' do
-    it 'is true if the read_at is known' do
-      notification = build_notification(:read_at => nil)
-      expect(notification.read?).to be_false
-
-      notification.read_at = Time.now
-
-      expect(notification.read?).to be_true
     end
   end
 
   describe Notification, '#client' do
     it 'defaults to a properly constructer Keikokuc::Client' do
-      notification = build_notification(:producer_api_key => 'fake-api-key')
+      notification = build_notification(:producer_api_key => 'fake-api-key', :producer_username => 'heroku-postgres')
       expect(notification.client).to be_kind_of(Keikokuc::Client)
-      expect(notification.client.producer_api_key).to eq('fake-api-key')
+      expect(notification.client.api_key).to eq('fake-api-key')
+      expect(notification.client.producer_username).to eq('heroku-postgres')
     end
 
     it 'can be injected' do

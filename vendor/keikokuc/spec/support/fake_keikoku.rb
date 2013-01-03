@@ -1,27 +1,33 @@
 class FakeKeikoku
   def initialize
-    @publishers = []
+    @producers = []
     @notifications = []
     @users = []
   end
 
-  def register_publisher(opts)
-    @publishers << opts
+  def register_producer(opts)
+    @producers << opts
   end
 
   def register_user(opts)
     @users << opts
   end
 
-  def publisher_by_api_key(api_key)
-    @publishers.detect { |p| p[:api_key] == api_key }
+  def producer_by_api_key(api_key)
+    @producers.detect { |p| p[:api_key] == api_key }
   end
 
-  def find_user(user, pass)
-    @users.detect { |u| u[:email] == user && u[:password] == pass }
+  def find_user(api_key)
+    @users.detect { |u| u[:api_key] == api_key }
+  end
+
+  def find_producer(user, api_key)
+    @producers.detect { |p| p[:username] == user && p[:api_key] == api_key }
   end
 
   def notifications_for_user(email)
+    puts "Finding notifications for #{email}"
+    puts "All notifications: #{@notifications}"
     @notifications.select do |notification|
       notification.to_hash['account_email'] == email
     end
@@ -30,7 +36,7 @@ class FakeKeikoku
   def call(env)
     with_rack_env(env) do
       if request_path == '/api/v1/notifications' && request_verb == 'POST'
-        if publisher_by_api_key(request_api_key)
+        if authenticate_producer
           notification = Notification.new({:id => next_id}.merge(request_body))
           @notifications << notification
           [200, { }, [Keikokuc::OkJson.encode({'id' => notification.id})]]
@@ -38,8 +44,8 @@ class FakeKeikoku
           [401, { }, ["Not authorized"]]
         end
       elsif request_path == '/api/v1/notifications' && request_verb == 'GET'
-        if current_user = authenticate_consumer
-          notifications = notifications_for_user(current_user).map(&:to_hash)
+        if api_key = authenticate_consumer
+          notifications = notifications_for_user(api_key).map(&:to_hash)
           [200, { }, [Keikokuc::OkJson.encode(notifications)]]
         else
           [401, { }, ["Not authorized"]]
@@ -50,7 +56,7 @@ class FakeKeikoku
             notification.to_hash['id'].to_s == $1.to_s
           end
           notification.mark_read_by!(current_user)
-          [200, {}, [Keikokuc::OkJson.encode({'read_by' => current_user, 'read_at' => Time.now.to_s})]]
+          [200, {}, [Keikokuc::OkJson.encode({'status' => 'ok'})]]
         else
           [401, { }, ["Not authorized"]]
         end
@@ -85,16 +91,21 @@ private
     Keikokuc::OkJson.decode(raw_body)
   end
 
-  def request_api_key
-    rack_env["HTTP_X_KEIKOKU_AUTH"]
+  def authenticate_producer
+    auth = Rack::Auth::Basic::Request.new(rack_env)
+    if auth.provided? && auth.basic? && creds = auth.credentials
+      if find_producer(*creds)
+        creds.first
+      end
+    end
   end
 
   def authenticate_consumer
     auth = Rack::Auth::Basic::Request.new(rack_env)
     if auth.provided? && auth.basic? && creds = auth.credentials
-      # creds looks like [user, password]
-      if find_user(*creds)
-        creds.first
+      # creds looks like [user, password] (technically ['', api_key])
+      if user = find_user(creds[-1])
+        user[:account_email]
       end
     end
   end

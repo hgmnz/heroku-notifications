@@ -20,18 +20,16 @@
 class Keikokuc::NotificationList
   include Enumerable
 
-  attr_accessor :user, :password
+  attr_accessor :api_key
 
   # Public: Initializes a NotificationList
   #
   # opts - options hash containing attribute values for the object
   #        being constructed accepting the following three keys:
-  #  user - the heroku account's email (required)
-  #  password - the heroku account's password (required)
+  #  api_key - the heroku account's api_key (required)
   #  client - the client, used for DI in tests
   def initialize(opts)
-    @user          = opts.fetch(:user)
-    @password      = opts.fetch(:password)
+    @api_key       = opts.fetch(:api_key)
     @client        = opts[:client]
     @notifications = []
   end
@@ -95,7 +93,7 @@ class Keikokuc::NotificationList
 
 private
   def client # :nodoc:
-    @client ||= Keikokuc::Client.new(:user     => user,
-                                     :password => password)
+    @client ||= Keikokuc::Client.new(:user    => '',
+                                     :api_key => api_key)
   end
 end

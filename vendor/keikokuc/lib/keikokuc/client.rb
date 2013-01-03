@@ -11,12 +11,11 @@ class Keikokuc::Client
   InvalidNotification = Class.new
   Unauthorized = Class.new
 
-  attr_accessor :producer_api_key, :user, :password
+  attr_accessor :producer_username, :api_key
 
   def initialize(opts = {})
-    @producer_api_key = opts[:producer_api_key]
-    @user             = opts[:user]
-    @password         = opts[:password]
+    @api_key           = opts[:api_key]
+    @producer_username = opts[:producer_username]
   end
 
   # Internal: posts a new notification to keikoku
@@ -42,7 +41,7 @@ class Keikokuc::Client
   # * `Client::Unauthorized` if API key auth fails
   def post_notification(attributes)
     begin
-      response = notifications_api.post(encode_json(attributes), {'X-KEIKOKU-AUTH' => producer_api_key})
+      response = notifications_api.post(encode_json(attributes))
       [parse_json(response), nil]
     rescue RestClient::UnprocessableEntity => e
       [parse_json(e.response), InvalidNotification]
@@ -56,7 +55,7 @@ class Keikokuc::Client
   #
   # Examples
   #
-  #   client = Keikokuc::Client.new(user: 'user@example.com', password: 'pass')
+  #   client = Keikokuc::Client.new(api_key: 'api-key')
   #   response, error = client.get_notifications
   #
   # Returns
@@ -95,7 +94,6 @@ class Keikokuc::Client
     begin
       response = notifications_api["/#{remote_id}/read"].post ''
       parsed_response = parse_json(response)
-      parsed_response[:read_at] = DateTime.parse(parsed_response[:read_at])
       [parsed_response, nil]
     rescue RestClient::Unauthorized
       [{}, Unauthorized]
@@ -103,12 +101,13 @@ class Keikokuc::Client
   end
   handle_timeout :read_notification
 
-
 private
   def notifications_api # :nodoc:
-    @notifications_api ||= RestClient::Resource.new(api_url,
-                                                    :user     => user,
-                                                    :password => password)
+    @notifications_api ||= RestClient::Resource.new(
+      api_url,
+      :user     => producer_username || '',
+      :password => api_key
+    )
   end
 
   def api_url # :nodoc:

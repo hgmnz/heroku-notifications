@@ -11,8 +11,7 @@ module Factories
 
   def build_notification_list(opts = {})
     defaults = {
-      :user     => 'user@example.com',
-      :password => 'pass'
+      :api_key => 'api-key'
     }
     Keikokuc::NotificationList.new(defaults.merge(opts))
   end

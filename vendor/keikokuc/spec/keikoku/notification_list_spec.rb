@@ -65,11 +65,6 @@ module Keikokuc
       list.fetch or raise "error fetching"
 
       expect(list.read_all).to be_true
-
-      list.each do |notification|
-        expect(notification).to be_read
-        expect(notification.read_at).to eq(now)
-      end
     end
 
     it 'returns false if any notification fails to be marked as read' do
