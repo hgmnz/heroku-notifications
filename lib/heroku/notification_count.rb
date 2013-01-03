@@ -1,14 +1,9 @@
 module Heroku
   class NotificationCount
-    # def initialize(notification_list_class = Keikokuc::NotificationList)
-    #   @notification_list_class = notification_list_class
-    # end
-
     def fetch
       @thread = Thread.new do
         list = Keikokuc::NotificationList.new(
-          :user     => Heroku::Auth.user,
-          :password => Heroku::Auth.password
+          :api_key => Heroku::Auth.password
         )
         list.fetch
         list.count

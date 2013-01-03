@@ -18,8 +18,7 @@ module Heroku::Command
     end
 
     it "shows an empty list when no notifications available" do
-      notification_list = Keikokuc::NotificationList.new(:user     => 'email@example.com',
-                                                         :password => '123')
+      notification_list = Keikokuc::NotificationList.new(:api_key => '123')
       mock(notification_list).fetch { true }
       notification_list.notifications = []
       any_instance_of(Heroku::Command::Notifications) do |command|
@@ -31,8 +30,7 @@ module Heroku::Command
     end
 
     it "shows notifications if they exist and marks them as read" do
-      notification_list = Keikokuc::NotificationList.new(:user     => 'email@example.com',
-                                                         :password => '123')
+      notification_list = Keikokuc::NotificationList.new(:api_key => '123')
       mock(notification_list).read_all { true }
       mock(notification_list).fetch { true }
       notification_list.notifications = user_notifications.map do |attributes|

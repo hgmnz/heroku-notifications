@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Heroku::NotificationCount do
   it 'fetches notification counts' do
-    list = Keikokuc::NotificationList.new({:user => 'hi', :password => 'fake'})
+    list = Keikokuc::NotificationList.new({:api_key => 'fake'})
     mock(list).fetch
     mock(list).count { 2 }
     mock(Keikokuc::NotificationList).new.with_any_args { list }
